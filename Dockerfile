@@ -1,4 +1,4 @@
-FROM golang:1.16.15
+FROM golang:1.20.1
 
 ENV TINI_VERSION v0.19.0
 
