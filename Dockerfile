@@ -1,6 +1,6 @@
 FROM golang:1.16.15-alpine3.15 as builder
 
-RUN apk add --no-cache git make gcc && git clone https://github.com/cloudflare/cfssl.git /workdir && \
+RUN apk add --no-cache git gcc libc-dev make && git clone https://github.com/cloudflare/cfssl.git /workdir && \
     cd /workdir && \
     make clean && \
     make all
