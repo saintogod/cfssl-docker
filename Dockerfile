@@ -5,7 +5,7 @@ RUN apk add --no-cache git gcc libc-dev make && \
     cd /workdir && \
     make clean && \
     make all
-    
+
 FROM alpine:3.17
 
 RUN apk add --no-cache tini && \
