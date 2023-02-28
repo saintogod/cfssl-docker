@@ -7,12 +7,12 @@ fi
 
 # Run service
 # Serving OCSP
-cfssl ocspserve -port=8889 -db-config db-pg.json
+/usr/bin/cfssl ocspserve -port=8889
     -db-config "${CA_CONF}/db-config.json" \
     -loglevel 0 &
 
 # Serving Main
-exec /go/bin/cfssl serve -address=0.0.0.0 -port=8888 \
+exec /usr/bin/cfssl serve -address=0.0.0.0 -port=8888 \
     -config "${CA_CONF}/ca-config.json" \
     -db-config "${CA_CONF}/db-config.json" \
     -ca "${CA_CONF}/ca.pem" \
