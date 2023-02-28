@@ -1,10 +1,5 @@
 #!/bin/sh
 
-# Initialize database
-if [ ! -f "${CA_CERTS}/certs.db" ]; then
-    cp "${HOME}/certs.db" "${CA_CERTS}/certs.db"
-fi
-
 # Run service
 # Serving OCSP
 /usr/bin/cfssl ocspserve -address=0.0.0.0 -port=8889 \
