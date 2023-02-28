@@ -7,7 +7,7 @@ fi
 
 # Run service
 # Serving OCSP
-/usr/bin/cfssl ocspserve -port=8889
+/usr/bin/cfssl ocspserve -address=0.0.0.0 -port=8889
     -db-config "${CA_CONF}/db-config.json" \
     -loglevel 0 &
 
