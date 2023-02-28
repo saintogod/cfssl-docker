@@ -17,8 +17,8 @@ RUN chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
 
 # Create cfssl user and template database
-RUN groupadd -g 1000 cfssl && \
-    useradd  -m -d /home/cfssl -s /bin/bash -g 1000 -u 1000 cfssl
+RUN addgroup --gid 1000 cfssl && \
+    adduser --home /home/cfssl --shell /bin/sh --gid 1000 -uid 1000 cfssl
 
 # CFSSL volume
 ENV CA_PATH=/etc/cfssl CA_CONF=/etc/cfssl/conf.d CA_CERTS=/home/cfssl/certs
