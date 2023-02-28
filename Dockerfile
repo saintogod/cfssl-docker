@@ -8,20 +8,17 @@ RUN apk add --no-cache git gcc libc-dev make && git clone https://github.com/clo
 FROM alpine:3.17
 
 ENV TINI_VERSION v0.19.0
-
-# Add Tini
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
-
-# Run tini
-ENTRYPOINT ["/tini", "--"]
-
-# Create cfssl user and group
-RUN adduser -h /home/cfssl -s /bin/sh -u 1000 -D cfssl
-
-# CFSSL volume
 ENV CA_PATH=/etc/cfssl CA_CONF=/etc/cfssl/conf.d CA_CERTS=/home/cfssl/certs
 
+# Add Tini
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
+RUN chmod +x /usr/bin/tini && \
+    adduser -h /home/cfssl -s /bin/sh -u 1000 -D cfssl
+
+# Run tini
+ENTRYPOINT ["/usr/bin/tini", "--"]
+
+# CFSSL volume
 VOLUME /etc/cfssl/conf.d /home/cfssl/certs
 
 # CFSSL service port
