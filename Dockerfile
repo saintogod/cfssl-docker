@@ -1,4 +1,11 @@
-FROM golang:1.20.1
+FROM golang:1.16.15-alpine3.15 as builder
+
+RUN git clone https://github.com/cloudflare/cfssl.git /workdir && \
+    cd /workdir && \
+    make clean && \
+    make all
+    
+FROM alpine:3.15
 
 ENV TINI_VERSION v0.19.0
 
@@ -9,17 +16,9 @@ RUN chmod +x /tini
 # Run tini
 ENTRYPOINT ["/tini", "--"]
 
-# Add cfssl
-RUN go get -u github.com/cloudflare/cfssl/cmd/cfssl && \
-    go get -u github.com/cloudflare/cfssl/cmd/...   && \
-    go get bitbucket.org/liamstask/goose/cmd/goose
-
 # Create cfssl user and template database
 RUN groupadd -g 1000 cfssl && \
-    useradd  -m -d /home/cfssl -s /bin/bash -g 1000 -u 1000 cfssl && \
-    cd /home/cfssl && goose -path \
-        $GOPATH/src/github.com/cloudflare/cfssl/certdb/sqlite -env production up && \
-    mv certstore_production.db certs.db
+    useradd  -m -d /home/cfssl -s /bin/bash -g 1000 -u 1000 cfssl
 
 # CFSSL volume
 ENV CA_PATH=/etc/cfssl CA_CONF=/etc/cfssl/conf.d CA_CERTS=/home/cfssl/certs
@@ -28,6 +27,8 @@ VOLUME /etc/cfssl/conf.d /home/cfssl/certs
 
 # CFSSL service port
 EXPOSE 8888 8889
+
+COPY --from=builder /workdir/bin/ /usr/bin
 
 # Run intermediate CA
 ADD entrypoint.sh /
